@@ -42,7 +42,7 @@ async def on_ready():
 ''' Prefix commands '''
 
 # hello command
-@bot.command(name='hello', aliases=['hi'])    
+@bot.command(name='hello', aliases=['hi'])
 async def hello_msg_cmd(ctx):
     embed = discord.Embed(
         title='Hello there',
@@ -52,7 +52,7 @@ async def hello_msg_cmd(ctx):
     embed.set_author(name=ctx.bot.user.name, icon_url=ctx.bot.user.avatar)
     await ctx.send(embed=embed)
 
-# not so helpfull help command    
+# not so helpfull help command
 @bot.command(name='help_msg', aliases=['helpme', 'sendhelp', 'helppls'])
 async def help_msg_cmd(ctx):
     embed = discord.Embed(
@@ -85,7 +85,7 @@ async def joke_msg_cmd(ctx):
     embed.set_author(name=ctx.bot.user.name, icon_url=ctx.bot.user.avatar)
     await ctx.send(embed=embed)
 
-# bot latency 
+# bot latency
 @bot.command(name='ping', aliases=['latency'])
 async def ping_cmd(ctx):
     embed = discord.Embed(
@@ -97,7 +97,6 @@ async def ping_cmd(ctx):
     embed.set_footer(text=f'Requested by: {ctx.author.name}.', icon_url=ctx.author.avatar)
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
-
 
 
 bot.run(token)
