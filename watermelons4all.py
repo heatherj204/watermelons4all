@@ -6,7 +6,7 @@ from random import choice
 # from datetime import datetime
 
 #import bot token
-from botapistuff import *
+from botstuff import *
 
 intents = discord.Intents.all()
 intents.message_content = True
