@@ -146,6 +146,7 @@ async def server_pf_cmd(ctx):
     embed.set_footer(text=f'id: {guild.id}')
 
 #    embed.set_thumbnail(guild.icon)
+
     embed.timestamp = datetime.datetime.utcnow()
 #    embed.set_thumbnail(user.display_avatar)
     await ctx.send(embed=embed)
