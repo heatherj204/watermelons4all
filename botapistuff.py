@@ -1,3 +1,4 @@
+#token for the bot:
 token = "MTI0MDgwMDAxODM3MDM5NjIxMQ.GaIwqL.EbGwJdRAwKVdpZGOXDRKQ3NSY-74xgv05HB33Q"
 
 # @bot.event
