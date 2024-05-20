@@ -151,4 +151,5 @@ async def server_pf_cmd(ctx):
 #    embed.set_thumbnail(user.display_avatar)
     await ctx.send(embed=embed)
 
+
 bot.run(token)
