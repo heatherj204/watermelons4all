@@ -9,6 +9,7 @@ from random import choice
 from botapistuff import *
 
 intents = discord.Intents.all()
+intents.message_content = True
 intents.members = True
 
 bot = commands.Bot(intents=intents, command_prefix="$", case_insensitive=True)
@@ -85,7 +86,7 @@ async def joke_msg_cmd(ctx):
     embed.set_author(name=ctx.bot.user.name, icon_url=ctx.bot.user.avatar)
     await ctx.send(embed=embed)
 
-# bot latency
+# bot latency cmd
 @bot.command(name='ping', aliases=['latency'])
 async def ping_cmd(ctx):
     embed = discord.Embed(
@@ -98,5 +99,55 @@ async def ping_cmd(ctx):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
+# user profile cmd
+@bot.command(name='profile', aliases=['pf'])
+async def user_profile_cmd(ctx, user: discord.Member=None):
+
+    if user == None:
+        user = ctx.message.author
+    inline = True
+    embed=discord.Embed(
+        title=user.name,
+        colour=discord.Color.dark_magenta()
+    )
+    userData = {
+        "mention" : user.mention,
+        "Nick" : user.nick,
+        "Created at" : user.created_at.strftime("%b %d, %Y, %T"),
+        "joined at" : user.joined_at.strftime("%b %d, %Y, %T"),
+        "Server" : user.guild,
+        "Top role" : user.top_role
+    }
+    for [fieldName, fieldValue] in userData.items():
+        embed.add_field(name=fieldName + ":", value=fieldValue, inline=inline)
+    embed.set_footer(text=f'id: {user.id}')
+
+    embed.timestamp = datetime.datetime.utcnow()
+#    embed.set_thumbnail(user.display_avatar)
+    await ctx.send(embed=embed)
+
+@bot.command(name='server')
+async def server_pf_cmd(ctx):
+    guild = ctx.message.author.guild
+    inline = True
+    embed=discord.Embed(
+        title=guild.name,
+        colour=discord.Color.dark_magenta()
+    )
+    serverData = {
+        "Owner" : guild.owner.mention,
+        "Channels" : len(guild.channels),
+        "Members" : guild.member_count,
+        "Created at" : guild.created_at.strftime("%b %d, %Y, %T"),
+        "Description" : guild.description,
+    }
+    for [fieldName, fieldValue] in serverData.items():
+        embed.add_field(name=fieldName + ":", value=fieldValue, inline=inline)
+    embed.set_footer(text=f'id: {guild.id}')
+
+#    embed.set_thumbnail(guild.icon)
+    embed.timestamp = datetime.datetime.utcnow()
+#    embed.set_thumbnail(user.display_avatar)
+    await ctx.send(embed=embed)
 
 bot.run(token)
