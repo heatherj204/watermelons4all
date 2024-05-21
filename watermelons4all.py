@@ -33,12 +33,19 @@ async def on_ready():
     await bot.tree.sync()
     print("Bot is ready")
 
+# @bot.event
+# async def on_guild_join(guild):
+
 # member joins
 # @bot.event
 # async def on_member_join(member):
 #     channel = bot.get_channel()
 #     await channel.send('Hello there!')
 
+@bot.event
+async def on_message(message):
+    await bot.process_commands(message)
+    print(message.content)
 
 ''' Prefix commands '''
 
@@ -111,10 +118,10 @@ async def user_profile_cmd(ctx, user: discord.Member=None):
         colour=discord.Color.dark_magenta()
     )
     userData = {
-        "mention" : user.mention,
+        "Mention" : user.mention,
         "Nick" : user.nick,
         "Created at" : user.created_at.strftime("%b %d, %Y, %T"),
-        "joined at" : user.joined_at.strftime("%b %d, %Y, %T"),
+        "Joined at" : user.joined_at.strftime("%b %d, %Y, %T"),
         "Server" : user.guild,
         "Top role" : user.top_role
     }
@@ -123,9 +130,10 @@ async def user_profile_cmd(ctx, user: discord.Member=None):
     embed.set_footer(text=f'id: {user.id}')
 
     embed.timestamp = datetime.datetime.utcnow()
-#    embed.set_thumbnail(user.display_avatar)
+    embed.set_thumbnail(url=user.avatar)
     await ctx.send(embed=embed)
 
+# server profile cmd
 @bot.command(name='server')
 async def server_pf_cmd(ctx):
     guild = ctx.message.author.guild
@@ -145,10 +153,8 @@ async def server_pf_cmd(ctx):
         embed.add_field(name=fieldName + ":", value=fieldValue, inline=inline)
     embed.set_footer(text=f'id: {guild.id}')
 
-#    embed.set_thumbnail(guild.icon)
-
+    embed.set_thumbnail(url=guild.icon)
     embed.timestamp = datetime.datetime.utcnow()
-#    embed.set_thumbnail(user.display_avatar)
     await ctx.send(embed=embed)
 
 
