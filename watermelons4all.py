@@ -10,7 +10,6 @@ def get_server_prefix(bot, message):
         prefix = json.load(f)
     
     return prefix[str(message.guild.id)]
-# from datetime import datetime
 
 #import bot token
 from botstuff import *
