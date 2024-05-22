@@ -47,8 +47,8 @@ async def on_ready():
 async def on_message(message):
     await bot.process_commands(message)
     line = f'{message.guild}, {message.channel}: {message.author} wrote: {message.content}'
-    with open("watermelons4all\chatlog.txt", "w") as f:
-            f.write (f'{line}\n')
+    # with open("watermelons4all\chatlog.txt", "w") as f:
+    #         f.write (f'{line}\n')
     print(line)
 
 ''' Prefix commands '''
