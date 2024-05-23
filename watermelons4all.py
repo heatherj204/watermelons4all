@@ -5,11 +5,19 @@ from discord.ext import commands
 from random import choice
 import json
 
+# adds all server ID's along with the current prefix
 def get_server_prefix(bot, message):
     with open("prefixes.json", "r") as f:
         prefix = json.load(f)
-    
+
     return prefix[str(message.guild.id)]
+
+# gives back the prefix for the server it is called in
+def call_prefix(server_id):
+    with open("prefixes.json", "r") as f:
+        prefixs = json.load(f)
+
+    return prefixs[str(server_id)]
 
 #import bot token
 from botstuff import *
@@ -28,18 +36,21 @@ bot = commands.Bot(intents=intents, command_prefix=get_server_prefix, case_insen
 async def slash_command(interaction:discord.Interaction):
     await interaction.response.send_message("Hello World!")
 
+# slash command for getting the current prefix
 @bot.tree.command(name="get_prefix", description="Hmm what is the prefix again??")
 async def slash_command_prefix(interaction:discord.Interaction):
-    await interaction.response.send_message("The prefix for all commands is: $")
+    await interaction.response.send_message(f"The prefix for all commands is: {call_prefix(interaction.guild.id)} ")
 
 
 ''' Event Commands'''
 
+# on ready event
 @bot.event
 async def on_ready():
     await bot.tree.sync()
     print("Bot is ready")
 
+# set defaily prefix on join
 @bot.event
 async def on_guild_join(guild):
     with open("prefixes.json", "r") as f:
@@ -49,6 +60,7 @@ async def on_guild_join(guild):
     with open("prefixes.json", "w") as f:
         json.dump(prefix, f, indent=4)
 
+# remove the prefix from json file when bot is removed form server
 @bot.event
 async def on_guild_remove(guild):
     with open("prefixes.json", "r") as f:
@@ -58,8 +70,6 @@ async def on_guild_remove(guild):
     with open("prefixes.json", "w") as f:
         json.dump(prefix, f, indent=4)
 
-# @bot.event
-# async def on_guild_join(guild):
 
 # member joins
 # @bot.event
@@ -75,6 +85,7 @@ async def on_message(message):
     #         f.write (f'{line}\n')
     print(line)
 
+
 ''' Prefix commands '''
 
 @bot.command()
@@ -85,7 +96,7 @@ async def setprefix(ctx, *, newprefix: str):
 
     with open("prefixes.json", "w") as f:
         json.dump(prefix, f, indent=4)
-    
+
     embed = discord.Embed(
         title=f'Prefix changed to {newprefix}',
         description=f'Prefix for all {ctx.bot.user.name} commands is now: {newprefix} thanks to: {ctx.author.mention}',
@@ -93,6 +104,7 @@ async def setprefix(ctx, *, newprefix: str):
         )
     embed.set_author(name=ctx.bot.user.name, icon_url=ctx.bot.user.avatar)
     await ctx.send(embed=embed)
+    return newprefix
 
 # hello command
 @bot.command(name='hello', aliases=['hi'])
