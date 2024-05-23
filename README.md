@@ -1,2 +1,2 @@
 # watermelons4all
-this is my disord bot watermelon4all
+This is my discord bot watermelon4all
