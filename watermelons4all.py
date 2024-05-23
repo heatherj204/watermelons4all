@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 
 import discord, datetime
 from discord.ext import commands
