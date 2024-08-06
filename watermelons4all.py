@@ -1,10 +1,7 @@
-
 import discord, datetime, json, os, asyncio
-from discord.ext import commands
+from discord.ext import commands, tasks
 from random import choice
-# import json
-# import os
-# import asyncio
+from itertools import cycle
 
 # adds all server ID's along with the current prefix
 def get_server_prefix(bot, message):
@@ -27,9 +24,13 @@ intents = discord.Intents.all()
 intents.message_content = True
 intents.members = True
 
-
 bot = commands.Bot(intents=intents, command_prefix=get_server_prefix, case_insensitive=True)
 
+bot_statuses = cycle(["Looking for watermelons", "Found a watermelon", "Enjoying some watermelon", "Thinking about watermelons", "I <3 watermelons", "Watermelon for life!"])
+
+@tasks.loop(seconds=30)
+async def change_bot_status():
+    await bot.change_presence(activity=discord.Game(next(bot_statuses)))
 
 ''' Slash Commands '''
 @bot.tree.command(name="mannu", description="Mannu is a good boy")
@@ -41,6 +42,15 @@ async def slash_command(interaction:discord.Interaction):
 async def slash_command_prefix(interaction:discord.Interaction):
     await interaction.response.send_message(f"The prefix for all commands is: {call_prefix(interaction.guild.id)} ")
 
+# slash command for getting all the commands
+@bot.tree.command(name="commands_list", description="A list of all the commands")
+async def slash_command_command_list(interaction:discord.Interaction):
+    commandslst = "```"
+    for bot_command in interaction.client.commands:
+        commandslst+=f"{call_prefix(interaction.guild.id)}{bot_command}\n"
+    commandslst+= "```"
+    await interaction.response.send_message(commandslst)
+
 
 ''' Event Commands'''
 # on ready event
@@ -48,6 +58,7 @@ async def slash_command_prefix(interaction:discord.Interaction):
 async def on_ready():
     await bot.tree.sync()
     print("Bot is ready")
+    change_bot_status.start()
 
 # set defaily prefix on join
 @bot.event
@@ -73,61 +84,7 @@ async def on_guild_remove(guild):
 async def on_message(message):
     await bot.process_commands(message)
     line = f'{message.guild}, {message.channel}: {message.author} wrote: {message.content}'
-    # with open("watermelons4all\chatlog.txt", "w") as f:
-    #         f.write (f'{line}\n')
     print(line)
-
-
-''' Prefix commands '''
-
-@bot.command()
-async def setprefix(ctx, *, newprefix: str):
-    with open("prefixes.json", "r") as f:
-        prefix = json.load(f)
-    prefix[str(ctx.guild.id)] = newprefix
-
-    with open("prefixes.json", "w") as f:
-        json.dump(prefix, f, indent=4)
-
-    embed = discord.Embed(
-        title=f'Prefix changed to {newprefix}',
-        description=f'Prefix for all {ctx.bot.user.name} commands is now: {newprefix} thanks to: {ctx.author.mention}',
-        colour=discord.Color.dark_blue()
-        )
-    embed.set_author(name=ctx.bot.user.name, icon_url=ctx.bot.user.avatar)
-    await ctx.send(embed=embed)
-
-# # hello command
-# @bot.command(name='hello', aliases=['hi'])
-# async def hello_msg_cmd(ctx):
-#     embed = discord.Embed(
-#         title='Hello there',
-#         description=f'Hello there {ctx.author.mention}',
-#         colour=discord.Color.dark_blue()
-#         )
-#     embed.set_author(name=ctx.bot.user.name, icon_url=ctx.bot.user.avatar)
-#     await ctx.send(embed=embed)
-
-# not so helpfull help command
-@bot.command(name='help_msg', aliases=['helpme', 'sendhelp', 'helppls'])
-async def help_msg_cmd(ctx):
-    embed = discord.Embed(
-        title="Help??, No help yourself NERD!!! xoxo",
-        colour=discord.Color.blue()
-        )
-    embed.set_footer(text=ctx.bot.user.name, icon_url=ctx.author.avatar)
-    await ctx.send(embed=embed)
-
-# echos command
-@bot.command()
-async def echo(ctx, words):
-    embed = discord.Embed(
-        title=words,
-        colour=discord.Color.dark_green()
-        )
-    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
-    await ctx.send(embed=embed)
-
 
 async def load():
     for filename in os.listdir("./cogs"):
